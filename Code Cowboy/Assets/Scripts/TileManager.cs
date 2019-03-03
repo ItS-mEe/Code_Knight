@@ -111,8 +111,13 @@ public class TileManager : MonoBehaviour
 
         for(int i = 0; i<map.GetLength(0); i++){
             for(int j = 0; j<map.GetLength(1); j++){
-                newmap[i,j] = map[mapW-1-j, i];
-                newentities[i,j] = entities[mapW-1-j, i];
+                if((i == 3 || i== 4) && (j == 3 || j==4)) {
+                    print("im herer...");
+                    newmap[i,j] = map[i,j];
+                } else {
+                    newmap[i,j] = map[mapW-1-j, i];
+                    newentities[i,j] = entities[mapW-1-j, i];
+                }
             }
         }
         map = newmap;
@@ -120,13 +125,23 @@ public class TileManager : MonoBehaviour
     }
 
     public void turnRight(){
+        print("getting called");
         GameObject[,] newmap = new GameObject[mapW, mapH];
         GameObject[,] newentities = new GameObject[mapW, mapH];
 
         for(int i = 0; i<map.GetLength(0); i++){
             for(int j = 0; j<map.GetLength(1); j++){
-                newmap[i,j] = map[j, mapW-1-i];
-                newentities[i,j] = entities[j, mapW-1-i];
+                print("i " + i + ", j " + j);
+                if((i == 3 || i== 4) && (j == 3 || j==4)) {
+                                        print("im herer...");
+
+                    newmap[i,j] = map[i,j];
+                                        continue;
+
+                } else {
+                    newmap[i,j] = map[j, mapW-1-i];
+                    newentities[i,j] = entities[j, mapW-1-i];
+                }
             }
         }
         map = newmap;
