@@ -13,14 +13,24 @@ public class TileManager : MonoBehaviour
     public GameObject mountainPrefab1, mountainPrefab2, mountainPrefab3, mountainPrefab4, grassPrefab, treePrefab, playerPrefab, enemyPrefab;
 
     public GameObject[] enemies;
-    public int numEnemies;
 
-    // Start is called before the first frame update
-    public void Awake()
+    private GameObject _player;
+    public GameObject player{
+        get {
+                if(_player != null) {
+                    return _player;
+                } else {
+                    _player = GameObject.FindWithTag("Player");
+                    return _player;
+                }
+            }
+    }
+
+    public void LoadLevel(int levelnum)
     {
         map = new GameObject[mapW, mapH];
         entities = new GameObject[mapW, mapH];
-        enemies = new GameObject[numEnemies];
+        enemies = new GameObject[levelnum+2];
 
         // initialize map
 
@@ -32,8 +42,8 @@ public class TileManager : MonoBehaviour
         }
 
         //randomly tree up
-        for(int i = 2; i<map.GetLength(0) - 2; i++){
-            for(int j = 2; j<map.GetLength(1) - 2; j++){
+        for(int i = 1; i<map.GetLength(0) - 1; i++){
+            for(int j = 1; j<map.GetLength(1) - 1; j++){
                 if(Random.value < 0.5) map[i,j] = treePrefab;
             }
         }
@@ -81,8 +91,11 @@ public class TileManager : MonoBehaviour
                 map[i,j].transform.position = this.transform.position + new Vector3((2 * i + adjust) * tileW / 2.0f, (2 * j + adjust) * tileH / 2.0f, 0);
             }
         }
-        entities[0,0] = GameObject.Instantiate(playerPrefab);
-        for(int i = 0; i<numEnemies; i++){
+        _player = (entities[0,0] = GameObject.Instantiate(playerPrefab));
+        entities[0,0].GetComponent<PlayerController>().myx = 0;
+        entities[0,0].GetComponent<PlayerController>().myy = 0;
+
+        for(int i = 0; i<levelnum+2; i++){
             enemies[i] = Instantiate(enemyPrefab);
             entities[mapH-1 - i/mapH, mapH-1-(i % mapH)] = enemies[i]; 
         }
@@ -93,6 +106,7 @@ public class TileManager : MonoBehaviour
     {
         for(int i = 0; i<map.GetLength(0); i++){
             for(int j = 0; j<map.GetLength(1); j++){
+                if(map[i,j]!=null)
                 map[i,j].transform.position = this.transform.position + new Vector3((2 * i + adjust) * tileW / 2.0f, (2 * j + adjust) * tileH / 2.0f, 0);
             }
         }
@@ -112,7 +126,6 @@ public class TileManager : MonoBehaviour
         for(int i = 0; i<map.GetLength(0); i++){
             for(int j = 0; j<map.GetLength(1); j++){
                 if((i == 3 || i== 4) && (j == 3 || j==4)) {
-                    print("im herer...");
                     newmap[i,j] = map[i,j];
                 } else {
                     newmap[i,j] = map[mapW-1-j, i];
@@ -125,16 +138,12 @@ public class TileManager : MonoBehaviour
     }
 
     public void turnRight(){
-        print("getting called");
         GameObject[,] newmap = new GameObject[mapW, mapH];
         GameObject[,] newentities = new GameObject[mapW, mapH];
 
         for(int i = 0; i<map.GetLength(0); i++){
             for(int j = 0; j<map.GetLength(1); j++){
-                print("i " + i + ", j " + j);
                 if((i == 3 || i== 4) && (j == 3 || j==4)) {
-                                        print("im herer...");
-
                     newmap[i,j] = map[i,j];
                                         continue;
 
@@ -159,13 +168,21 @@ public class TileManager : MonoBehaviour
         return Vector2Int.zero;
     }
 
-    public void cleanup(){
+    public void OnDestroy(){
         for(int i = 0; i<map.GetLength(0); i++){
             for(int j = 0; j<map.GetLength(1); j++){
-                Destroy(map[i, j]);
+                if(map[i,j]!=null)
+                    Destroy(map[i, j]);
                 if(entities[i, j] != null)
                     Destroy(entities[i, j]);
             }
         }
     }
+
+    public void killAll(){
+        foreach(GameObject enemy in enemies){
+            Destroy(enemy);
+        }
+    }
+
 }

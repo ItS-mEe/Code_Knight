@@ -5,18 +5,31 @@ using UnityEngine;
 public class EnemyController : MonoBehaviour
 {
     
-    PlayerController player;
+    PlayerController _player;
+    PlayerController player{
+        get{
+            if(_player == null){
+                _player = tileManager.player.GetComponent<PlayerController>();
+            }
+            return _player;
+        }
+    }
     SpriteRenderer sr;
     public Sprite attack1, attack2;
-
-    TileManager tileManager;
+    TileManager _tileManager;
+    TileManager tileManager{
+        get {
+            if(_tileManager == null){
+                _tileManager = GameObject.Find("Tile Manager(Clone)").GetComponent<TileManager>();
+            }
+            return _tileManager;
+        }
+    }
     public GameObject attackAnimation;
 
 
     public void Start(){
-        tileManager = GameObject.Find("Tile Manager").GetComponent<TileManager>();
         sr = this.GetComponent<SpriteRenderer>();
-        player = GameObject.Find("Player(Clone)").GetComponent<PlayerController>();
     }
 
     public void done(){
@@ -28,7 +41,6 @@ public class EnemyController : MonoBehaviour
     }
 
     public IEnumerator Turn(GameObject toNotify){
-        print(this);
         int playerx = player.myx;
         int playery = player.myy;
 
@@ -74,24 +86,19 @@ public class EnemyController : MonoBehaviour
                     mypos = move(mypos.x, mypos.y, mypos.x, mypos.y + 1);
                 }
             }
-            print("made it here");
             if(playery == mypos.y && Mathf.Abs(mypos.x - playerx) < 5){
-                                            print("made it here");
 
                 yield return new WaitForSeconds(0.1f);
-                            print("made it here");
 
                 // attack player
                 sr.sprite = attack2;
                 yield return new WaitForSeconds(0.2f);
-                            print("made it here");
 
                 sr.sprite = attack1;
                 //spawn projectile
                 GameObject atkAnim = Instantiate(attackAnimation);
                 atkAnim.transform.position = player.transform.position;
                 yield return new WaitForSeconds(0.2f);
-                            print("made it here");
 
                 player.SendMessage("takeDamage", 1);
             }

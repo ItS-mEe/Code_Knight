@@ -4,16 +4,16 @@ using UnityEngine;
 
 public abstract class Card : MonoBehaviour
 {
-    public PlayerController player;
+    public PlayerController player{
+        get {return deckManager.tileManager.player.GetComponent<PlayerController>(); }
+    }
     public DeckManager deckManager;
 
-    void Start(){
-        player = GameObject.Find("Player(Clone)").GetComponent<PlayerController>();
-        deckManager = GameObject.Find("DeckManager").GetComponent<DeckManager>();
+    public void setup(DeckManager dm, PlayerController pc){
+        deckManager = dm;
     }
 
     public void move(){
-        print("got message");
         deckManager.move(this.gameObject);
     }
 

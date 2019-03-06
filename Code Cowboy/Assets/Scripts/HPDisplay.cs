@@ -22,7 +22,9 @@ public class HPDisplay : MonoBehaviour
     void Update()
     {
         if(player == null || player.gameObject == null){
-            player = GameObject.Find("Player(Clone)").GetComponent<TracksHP>();
+            GameObject temp = GameObject.Find("Player(Clone)");
+            if (temp == null) return;
+            player = temp.GetComponent<TracksHP>();
         }
         if(player.hp == 4){
             sr.sprite = hp4;

@@ -1,18 +1,53 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
-    public int myx = 0, myy = 0;
-    TileManager tileManager;
+    private int _myx, _myy;
+    public int myx{
+        get { return _myx;}
+        set{
+            _myx = value;
+        }
+    }
+    public int myy{
+        get { return _myy;}
+        set{
+            _myy = value;
+        }
+    }
+    TileManager _tileManager;
+    TileManager tileManager{
+        get {
+            if(_tileManager == null){
+                _tileManager = GameObject.Find("Tile Manager(Clone)").GetComponent<TileManager>();
+            }
+            return _tileManager;
+        }
+    }
     SpriteRenderer sr;
     public Sprite idle, walking1, walking2, shooting1, shooting2, melee1, melee2, melee3;
 
+    public GameObject hpDisplayPrefab, hpDisplay;
+
     void Start()
     {
-        tileManager = GameObject.Find("Tile Manager").GetComponent<TileManager>();
         sr = this.GetComponent<SpriteRenderer>();
+        myx = 0;
+        myy = 0;
+        print("in start method");
+        hpDisplay = Instantiate(hpDisplayPrefab);
+        hpDisplay.transform.SetParent(GameObject.Find("Canvas").transform);
+        (hpDisplay.transform as RectTransform).anchoredPosition = new Vector2(10, -10);
+    }
+
+    void OnDestroy(){
+        Destroy(hpDisplay);
+        myy = 0;
+        myx = 0;
     }
 
     public void turnLeft(){
@@ -20,7 +55,6 @@ public class PlayerController : MonoBehaviour
         int temp = myy;
         myy = tileManager.mapH-1-myx;
         myx = temp;
-        print("x " + myx + ", y " + myy);
     }
 
     public void turnRight(){
@@ -28,10 +62,11 @@ public class PlayerController : MonoBehaviour
         int temp = myx;
         myx = tileManager.mapW-1-myy;
         myy = temp;
-        print("x " + myx + ", y " + myy);
     }
 
     public void move(){
+        print("----- move -----");
+        print("myx " + myx + ", myy " + myy);
         if(myx == tileManager.mapW - 1){
             // couldn't move foreward
             return;
@@ -45,11 +80,11 @@ public class PlayerController : MonoBehaviour
             return;
         }
         else{
-            print(tileManager.entities[myx, myy]);
             tileManager.entities[myx+1, myy] = tileManager.entities[myx, myy];
             tileManager.entities[myx, myy] = null;
             myx ++;
         }
+        print("myx " + myx + ", myy " + myy);
     }
 
     public void attack(){
@@ -57,7 +92,12 @@ public class PlayerController : MonoBehaviour
             if(tileManager.entities[i, myy] != null && tileManager.entities[i, myy].tag == "Enemy"){
                 if(i-this.myx < 3){
                     // melee attack animation
+                    if(myx+2 < tileManager.mapW){
                     StartCoroutine(attackAnimation(tileManager.entities[myx+1, myy], tileManager.entities[myx+2, myy]));
+
+                    } else                     
+                    StartCoroutine(attackAnimation(tileManager.entities[myx+1, myy], null));
+
                 }
                 else{
                     //ranged attack animation
@@ -75,7 +115,7 @@ public class PlayerController : MonoBehaviour
     }
 
     public void die(){
-        Application.LoadLevel("GameOver");
+        SceneManager.LoadScene("GameOver");
     }
 
     public IEnumerator rangedAttackAnimation(GameObject enemy){

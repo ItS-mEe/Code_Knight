@@ -1,10 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LoadLevel : MonoBehaviour
 {
     public void DoIt(){
-        Application.LoadLevel("MainGame");
+        SceneManager.LoadScene("MainGame");
     }
 }

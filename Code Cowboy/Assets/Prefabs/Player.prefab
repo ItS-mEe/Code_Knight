@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3831777623520426478}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -94,8 +94,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30708a5fa514541a9ade5c0708691627, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myx: 0
-  myy: 0
   idle: {fileID: 21300000, guid: 24e2a26a6246844cdb4d0280664b859e, type: 3}
   walking1: {fileID: 21300000, guid: 5a7018b88bd8847a5836097735ad33ed, type: 3}
   walking2: {fileID: 21300000, guid: 8610bf5c59e8e4fe89d6b85925ea3c56, type: 3}
@@ -104,6 +102,9 @@ MonoBehaviour:
   melee1: {fileID: 21300000, guid: 4441a737f20db4aaebe8b1733611cfb8, type: 3}
   melee2: {fileID: 21300000, guid: d42a9e257488149919df047d0ca6a322, type: 3}
   melee3: {fileID: 21300000, guid: 78199fb1707e74039b24880f23bf0419, type: 3}
+  hpDisplayPrefab: {fileID: 985123628169388489, guid: b4ebd06f942fa4343900f204646bd421,
+    type: 3}
+  hpDisplay: {fileID: 0}
 --- !u!114 &216049562177580161
 MonoBehaviour:
   m_ObjectHideFlags: 0
